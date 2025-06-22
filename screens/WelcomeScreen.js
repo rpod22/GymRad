@@ -1,8 +1,17 @@
 import React from 'react';
+import { COLORS } from '../colors';
 import { View, Text, Button, TouchableOpacity ,StyleSheet, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const WelcomeScreen = ({ navigation }) => {
     return (
+        <LinearGradient 
+            colors={[ '#1fb582', '#26344a',]} 
+            locations={[0,0.6]}
+            style={styles.gradient}
+            start={{x: 0, y: 0}}
+            end={{x:1, y:1}}
+        >
         <View style={styles.container}>
             <Image
                 source={require('../assets/logo.png')}
@@ -15,15 +24,20 @@ const WelcomeScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Rozpocznij</Text>
             </TouchableOpacity>
         </View>
+        </LinearGradient>
     )
 }
 
 const styles = StyleSheet.create({
+    gradient: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#26344a'
     },
     logoImage: {
         height: 300,
@@ -33,7 +47,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     button: {
-        backgroundColor: '#1fb582',
+        backgroundColor: COLORS.greenCustom,
         paddingVertical: 14,
         paddingHorizontal: 36,
         borderRadius: 50,
@@ -41,7 +55,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     buttonText: {
-        color: '#152e4f',
+        color: COLORS.darkBlueCustom,
         fontSize: 28,
         fontWeight: 'bold',
         letterSpacing: 0.5,
