@@ -1,9 +1,11 @@
 import React from "react";
 import { COLORS } from '../colors';
-import { View, Text, Button, TouchableOpacity ,StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity ,StyleSheet, Keyboard, Alert} from 'react-native';
 import { useState } from "react";
 import { FlatList } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 
 const TrainingPlansScreen = ({ navigation }) => {
 
@@ -12,6 +14,19 @@ const TrainingPlansScreen = ({ navigation }) => {
         {id: 2, name: "FBW", workouts: 2},
         {id: 3, name: "Push Pull Legs Upper Lower", workouts: 5},
     ]);
+    
+    const [newPlanName, setNewPlanName] = useState('');
+
+    const handleDeletePlan = (id) => {
+        Alert.alert(
+            "Usuń plan",
+            "Czy na pewno chcesz usunąć ten plan?",
+            [
+                {text: "Anuluj", style: "cancel"}, 
+                {text: "Usuń", style: "destructive", onPress: () => {setPlans(plans.filter(plan => plan.id !== id))}}
+            ]
+        );
+    };
 
     return (
         <LinearGradient 
@@ -22,9 +37,22 @@ const TrainingPlansScreen = ({ navigation }) => {
             style={styles.gradient}>
             <View style={styles.headerRow}>
                 <Text style={styles.header}>MOJE PLANY TRENINGOWE</Text>
-                <TouchableOpacity style={styles.addPlanButton} onPress={() => {}}>
+                <TouchableOpacity style={styles.addPlanButton} onPress={() => {
+                    if (newPlanName.trim() === '') return;
+                    setPlans([...plans, {id: Date.now(), name: newPlanName, workouts: 0}]);
+                    setNewPlanName(''); // clearing input
+                    Keyboard.dismiss();
+                }}>
                     <Text style={styles.addPlanButtonText}>+</Text>
                 </TouchableOpacity>
+            </View>
+            <View style={styles.inputBox}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nazwa nowego planu"
+                    value={newPlanName}
+                    onChangeText={setNewPlanName}
+                />
             </View>
             <FlatList
                 data={plans}
@@ -32,7 +60,10 @@ const TrainingPlansScreen = ({ navigation }) => {
                 renderItem={({ item }) => (
                     <View style={styles.planCard}>
                         <Text style={styles.planName}>{item.name}</Text>
-                        <Text style={styles.planWorkouts}>Treningów: {item.workouts}</Text>
+                        <Text style={styles.planWorkouts}>Treningi: {item.workouts}</Text>
+                        <TouchableOpacity style={styles.deleteIcon} onPress={() => handleDeletePlan(item.id)}>
+                            <MaterialCommunityIcons name="trash-can-outline" size={26} color="#ff5c5c"/>
+                        </TouchableOpacity>
                     </View>
                 )}
             />
@@ -88,6 +119,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     planCard: {
+        position: 'relative',
+        flex: 1,
+        flexDirection: 'column',
         backgroundColor: 'rgba(21, 46, 79, 1)',
         borderRadius: 20,
         marginBottom: 18,
@@ -99,7 +133,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 4,
-        marginTop: 5
+        marginTop: 5,
     },
     planName: {
         color: COLORS.greenCustom,
@@ -112,6 +146,29 @@ const styles = StyleSheet.create({
         fontSize: 15,
         opacity: 0.8,
     },
+    inputBox: {
+        flex: 'row',
+        alignItems: 'center'
+    },
+    input: {
+        backgroundColor: 'white',
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        marginBottom: 16,
+        fontsize: 16,
+        color: COLORS.darkBlueCustom,
+        elevation: 1,
+        width: '90%',
+        textAlign: 'center'
+    },
+    deleteIcon: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        zIndex: 2,
+    },
+
 })
 
 
