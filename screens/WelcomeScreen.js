@@ -2,6 +2,7 @@ import React from 'react';
 import { COLORS } from '../colors';
 import { View, Text, Button, TouchableOpacity ,StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const WelcomeScreen = ({ navigation }) => {
     return (
@@ -12,18 +13,20 @@ const WelcomeScreen = ({ navigation }) => {
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}
         >
-        <View style={styles.container}>
-            <Image
-                source={require('../assets/logo.png')}
-                style={styles.logoImage}
-            />
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('TrainingPlans')}
-            >
-                <Text style={styles.buttonText}>Rozpocznij</Text>
-            </TouchableOpacity>
-        </View>
+            <SafeAreaView style={styles.safeAreaView} edges={['top', 'left', 'right']}>
+                <View style={styles.container}>
+                    <Image
+                        source={require('../assets/logo.png')}
+                        style={styles.logoImage}
+                    />
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('TrainingPlans')}
+                    >
+                        <Text style={styles.buttonText}>Rozpocznij</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
         </LinearGradient>
     )
 }
@@ -34,10 +37,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    safeAreaView: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        height: '100%'
     },
     logoImage: {
         height: 300,

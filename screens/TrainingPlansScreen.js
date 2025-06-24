@@ -1,19 +1,14 @@
 import React from "react";
 import { COLORS } from '../colors';
-import { View, Text, TextInput, TouchableOpacity ,StyleSheet, Keyboard, Alert} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity ,StyleSheet, Keyboard, Alert, Pressable, FlatList} from 'react-native';
 import { useState } from "react";
-import { FlatList } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 
-const TrainingPlansScreen = ({ navigation }) => {
 
-    const [plans, setPlans] = useState([
-        {id: 1, name: "Push Pull Legs", workouts: 3},
-        {id: 2, name: "FBW", workouts: 2},
-        {id: 3, name: "Push Pull Legs Upper Lower", workouts: 5},
-    ]);
+const TrainingPlansScreen = ({ navigation, plans, setPlans }) => {
     
     const [newPlanName, setNewPlanName] = useState('');
 
@@ -26,47 +21,55 @@ const TrainingPlansScreen = ({ navigation }) => {
                 {text: "Usuń", style: "destructive", onPress: () => {setPlans(plans.filter(plan => plan.id !== id))}}
             ]
         );
-    };
+    }; //deleting chosen plan
 
     return (
         <LinearGradient 
-            colors={['#152e4f', '#26344a', '#1fb582', 'white']}
+            colors={['#152e4f', '#26344a', '#1fb582']}
             locations={[0, 0.5, 1]}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}
             style={styles.gradient}>
-            <View style={styles.headerRow}>
-                <Text style={styles.header}>MOJE PLANY TRENINGOWE</Text>
-                <TouchableOpacity style={styles.addPlanButton} onPress={() => {
-                    if (newPlanName.trim() === '') return;
-                    setPlans([...plans, {id: Date.now(), name: newPlanName, workouts: 0}]);
-                    setNewPlanName(''); // clearing input
-                    Keyboard.dismiss();
-                }}>
-                    <Text style={styles.addPlanButtonText}>+</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.inputBox}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nazwa nowego planu"
-                    value={newPlanName}
-                    onChangeText={setNewPlanName}
+            <SafeAreaView style={styles.safeAreaView} edges={['top', 'left', 'right']}>
+                <View style={styles.headerRow}>
+                    <Text style={styles.header}>MOJE PLANY TRENINGOWE</Text>
+                    <TouchableOpacity style={styles.addPlanButton} onPress={() => {
+                        if (newPlanName.trim() === '') return;
+                        setPlans([...plans, {id: Date.now(), name: newPlanName, trainings: []}]); //Date.now() is just the id for the new plan
+                        setNewPlanName(''); // clearing input
+                        Keyboard.dismiss();
+                    }}>
+                        <Text style={styles.addPlanButtonText}>+</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.inputBox}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Wpisz nazwę nowego planu i wciśnij +"
+                        value={newPlanName}
+                        onChangeText={setNewPlanName}
+                    />
+                </View>
+                <FlatList
+                    data={plans}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <Pressable
+                            onPress={() => navigation.navigate('PlanDetails', { planId: item.id })}
+                            style={({ pressed }) => [
+                                styles.planCard,
+                                pressed && {opacity: 0.7, backgroundColor: 'rgba(34, 139, 230, 0.14)'}
+                            ]}   
+                        >
+                            <Text style={styles.planName}>{item.name}</Text>
+                            <Text style={styles.planWorkouts}>Treningi: {item.trainings.length}</Text>
+                            <TouchableOpacity style={styles.deleteIcon} onPress={() => handleDeletePlan(item.id)}>
+                                <MaterialCommunityIcons name="trash-can-outline" size={26} color="#ff5c5c"/>
+                            </TouchableOpacity>
+                        </Pressable>
+                    )}
                 />
-            </View>
-            <FlatList
-                data={plans}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.planCard}>
-                        <Text style={styles.planName}>{item.name}</Text>
-                        <Text style={styles.planWorkouts}>Treningi: {item.workouts}</Text>
-                        <TouchableOpacity style={styles.deleteIcon} onPress={() => handleDeletePlan(item.id)}>
-                            <MaterialCommunityIcons name="trash-can-outline" size={26} color="#ff5c5c"/>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            />
+            </SafeAreaView>
         </LinearGradient>
     )
 }
@@ -77,11 +80,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         paddingTop: 0,
     },
+    safeAreaView: {
+        flex: 1,
+    },
     headerRow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 60,
         marginBottom: 32,
         width: '90%',
         alignSelf: 'center',
@@ -160,7 +165,8 @@ const styles = StyleSheet.create({
         color: COLORS.darkBlueCustom,
         elevation: 1,
         width: '90%',
-        textAlign: 'center'
+        textAlign: 'center',
+        marginTop: -10
     },
     deleteIcon: {
         position: 'absolute',
