@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Keyboard } from "react-native";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,6 +11,20 @@ import { COLORS } from "../colors"
 const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
     const  { planId } = route.params;
     const plan = plans.find(p => p.id === planId);
+
+    {/*
+    this effect protects the app from crashing when:
+    -user adds an empty plan
+    -clicks on it
+    -goes back and deletes the empty plan
+    -if not for this, the app would crash because it tries to reach 'undefined.name' while deleting the plan
+    */}
+    React.useEffect(() => {
+        if (!plan) {
+            navigation.goBack();
+        }
+    }, [plan]);
+    if (!plan) return null;
 
     const [newTrainingName, setNewTrainingName] = useState('');
 
@@ -39,6 +53,8 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
         )
     };
 
+
+
     return (
         <LinearGradient 
             style={styles.gradient}
@@ -48,6 +64,12 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
             end={{x:1, y:1}}>
             <SafeAreaView style={styles.safeAreaView} edges={['top', 'left', 'right']}>
                 <View style={styles.headerRow}>
+                    <TouchableOpacity 
+                        style={styles.goBackArrow}
+                        onPress={ () => {navigation.goBack();} }
+                    >
+                        <MaterialCommunityIcons name="keyboard-backspace" size={26} color={COLORS.greenCustom}/>
+                    </TouchableOpacity>
                     <TextInput
                         style={styles.textInput}
                         placeholder="Wpisz nazwę treningu i wciśnij +"
@@ -55,11 +77,12 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                         onChangeText={setNewTrainingName}
                     />
                     <TouchableOpacity style={styles.addButton} onPress={() => {
-                        if(newTrainingName.trim === '') return;
+                        if (newTrainingName.trim() === '') return;
                         addTraining(newTrainingName);
                         setNewTrainingName('');
+                        Keyboard.dismiss();
                     }}>
-                        <Text style={{fontSize: 32, color: COLORS.darkBlueCustom}}>+</Text>
+                        <MaterialCommunityIcons name="plus-circle" size={42} color={COLORS.greenCustom}/>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleInfoRow}>
@@ -69,7 +92,8 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                 <DraggableFlatList
                     data={plan.trainings}
                     keyExtractor={item => item.id.toString()}
-                    style={{marginTop: 12, height: '100%'}}
+                    style={{marginTop: 12}}
+                    contentContainerStyle={{ paddingBottom: 200}}
                     onDragEnd={({ data }) => {
                         setPlans(plans =>
                             plans.map(p => 
@@ -114,6 +138,9 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
 };
 
 const styles = StyleSheet.create({
+    safeAreaView: {
+        flex: 1,
+    },  
     gradient: {
         flex: 1,
     },
@@ -123,30 +150,33 @@ const styles = StyleSheet.create({
         marginTop: 10,
         justifyContent: 'space-evenly'
     },
+    goBackArrow: {
+        position: 'relative',
+        top: 6,
+        left: 3,
+        marginRight: 5,
+        alignItems: 'center'
+    },
     titleInfoRow: {
         flexDirection: 'row',
         width: '70%',
         justifyContent: 'space-evenly',
-        alignItems: 'center'
+        alignItems: 'center',
+        // marginLeft: 10,
     },
     textInput: {
         backgroundColor: 'white',
         borderRadius: 12,
         paddingHorizontal: 16,
         fontSize: 16, 
-        width: '80%'
+        width: '65%'
     },
     addButton: {
-        backgroundColor: COLORS.greenCustom,
-        width: 40,
-        height: 40,
-        borderRadius: 23,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 4, // Android
-        shadowColor: '#000', //IOS
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.7,
+        elevation: 4,
+        borderRadius: 50,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.6,
         shadowRadius: 4,
     },
     title: {
@@ -160,18 +190,28 @@ const styles = StyleSheet.create({
     info: {
         fontSize: 16, 
         color: 'gray',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
     },
     trainingCard: {
+        marginTop: 10,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'rgba(21, 46, 79, 0.9)',
         padding: 16,
-        marginBottom: 15,
+        marginBottom: 10,
         marginLeft: 20,
         borderRadius: 16,
         width: '90%',
-        height: 120,
-        justifyContent: 'space-between'
+        height: 100,
+        justifyContent: 'space-between',
+        elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
     },
     trainingCardName: {
         color: COLORS.greenCustom,
