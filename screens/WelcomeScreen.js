@@ -7,8 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const WelcomeScreen = ({ navigation }) => {
     return (
         <LinearGradient 
-            colors={[ '#1fb582', '#26344a',]} 
-            locations={[0,0.6]}
+            colors={COLORS.gradient}
+            locations={[0, 0.6, 1]}
             style={styles.gradient}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     button: {
-        backgroundColor: COLORS.greenCustom,
+        backgroundColor: COLORS.accent,
         paddingVertical: 14,
         paddingHorizontal: 36,
         borderRadius: 50,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     buttonText: {
-        color: COLORS.darkBlueCustom,
+        color: COLORS.primaryBg,
         fontSize: 28,
         fontWeight: 'bold',
         letterSpacing: 0.5,

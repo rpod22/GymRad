@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import WelcomeScreen from './screens/WelcomeScreen';
 import TrainingPlansScreen from './screens/TrainingPlansScreen';
 import PlanDetailsScreen from './screens/PlanDetailsScreen';
+import TrainingDetailsScreen from './screens/TrainingDetailsScreen';
 import { useState } from 'react';
 
 const Stack = createNativeStackNavigator();
@@ -54,6 +55,15 @@ export default function App() {
               />
             )}
           </Stack.Screen>  
+          <Stack.Screen name="TrainingDetails">
+            {props => (
+              <TrainingDetailsScreen
+                {...props}
+                plans={plans}
+                setPlans={setPlans}
+              />
+            )}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

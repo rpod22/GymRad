@@ -58,8 +58,8 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
     return (
         <LinearGradient 
             style={styles.gradient}
-            colors={['#152e4f', '#26344a', '#1fb582']}
-            locations={[0, 0.5, 1]}
+            colors={COLORS.gradient}
+            locations={[0, 0.6, 1]}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}>
             <SafeAreaView style={styles.safeAreaView} edges={['top', 'left', 'right']}>
@@ -68,7 +68,7 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                         style={styles.goBackArrow}
                         onPress={ () => {navigation.goBack();} }
                     >
-                        <MaterialCommunityIcons name="keyboard-backspace" size={26} color={COLORS.greenCustom}/>
+                        <MaterialCommunityIcons name="keyboard-backspace" size={26} color={COLORS.accent}/>
                     </TouchableOpacity>
                     <TextInput
                         style={styles.textInput}
@@ -82,7 +82,7 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                         setNewTrainingName('');
                         Keyboard.dismiss();
                     }}>
-                        <MaterialCommunityIcons name="plus-circle" size={42} color={COLORS.greenCustom}/>
+                        <MaterialCommunityIcons name="plus-circle" size={42} color={COLORS.accent}/>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleInfoRow}>
@@ -104,14 +104,19 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                         )
                     }}
                     renderItem={({ item, drag, isActive }) => (
-                        <TouchableOpacity style={[styles.trainingCard, isActive && {opacity: 0.6}]}>
+                        <TouchableOpacity style={[styles.trainingCard, isActive && {opacity: 0.6}]}
+                            onPress={() => navigation.navigate('TrainingDetails', {
+                                planId: plan.id,
+                                trainingId: item.id
+                            })}
+                        >
                             {/* DRAG HANDLE */}
                             <TouchableOpacity
                                 onLongPress={drag}
                                 delayLongPress={100}
                                 style={{ padding: 10, marginRight: 10 }}
                             >
-                                <MaterialCommunityIcons name="drag" size={28} color="#888" />
+                                <MaterialCommunityIcons name="drag" size={28} color="lightgray" />
                             </TouchableOpacity>
                             <Text style={styles.trainingCardName}>{item.name}</Text>
                             <TouchableOpacity
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
         width: '70%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        // marginLeft: 10,
+        marginLeft: 10,
     },
     textInput: {
         backgroundColor: 'white',
@@ -180,16 +185,16 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
     },
     title: {
-        backgroundColor: COLORS.greenCustom,
+        backgroundColor: COLORS.accent,
         padding: 12,
         borderRadius: 10,
         fontSize: 12, 
         fontWeight: 'bold',
-        color: COLORS.darkBlueCustom,
+        color: COLORS.primaryBg,
     },
     info: {
         fontSize: 16, 
-        color: 'gray',
+        color: 'lightgray',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
@@ -199,7 +204,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(21, 46, 79, 0.9)',
+        backgroundColor: 'rgba(21, 46, 79, 1)',
         padding: 16,
         marginBottom: 10,
         marginLeft: 20,
@@ -214,7 +219,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
     },
     trainingCardName: {
-        color: COLORS.greenCustom,
+        color: COLORS.accent,
         fontSize: 24,
         fontWeight: 'bold',
         marginRight: 35

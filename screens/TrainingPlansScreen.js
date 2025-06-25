@@ -7,7 +7,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 
-
 const TrainingPlansScreen = ({ navigation, plans, setPlans }) => {
     
     const [newPlanName, setNewPlanName] = useState('');
@@ -25,8 +24,8 @@ const TrainingPlansScreen = ({ navigation, plans, setPlans }) => {
 
     return (
         <LinearGradient 
-            colors={['#152e4f', '#26344a', '#1fb582']}
-            locations={[0, 0.5, 1]}
+            colors={COLORS.gradient}
+            locations={[0, 0.6, 1]}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}
             style={styles.gradient}>
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     header: {
-        color: COLORS.greenCustom,
+        color: COLORS.accent,
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'left',
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
     },
     addPlanButton: {
-        backgroundColor: COLORS.greenCustom,
+        backgroundColor: COLORS.accent,
         width: 40,
         height: 40,
         borderRadius: 23,
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
     },
     addPlanButtonText: {
-        color: COLORS.darkBlueCustom,
+        color: COLORS.primaryBg,
         fontSize: 32,
         fontWeight: 'bold',
         marginTop: -2,
@@ -141,13 +140,13 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     planName: {
-        color: COLORS.greenCustom,
+        color: COLORS.accent,
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 8,
     },
     planWorkouts: {
-        color: COLORS.white,
+        color: COLORS.textMain,
         fontSize: 15,
         opacity: 0.8,
     },
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         marginBottom: 16,
         fontsize: 16,
-        color: COLORS.darkBlueCustom,
+        color: COLORS.primaryBg,
         elevation: 1,
         width: '90%',
         textAlign: 'center',
