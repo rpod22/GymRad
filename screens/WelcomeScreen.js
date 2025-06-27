@@ -8,7 +8,7 @@ const WelcomeScreen = ({ navigation }) => {
     return (
         <LinearGradient 
             colors={COLORS.gradient}
-            locations={[0, 0.6, 1]}
+            locations={[0.4, 0.6, 1]}
             style={styles.gradient}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}

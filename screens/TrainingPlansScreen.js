@@ -25,7 +25,7 @@ const TrainingPlansScreen = ({ navigation, plans, setPlans }) => {
     return (
         <LinearGradient 
             colors={COLORS.gradient}
-            locations={[0, 0.6, 1]}
+            locations={[0.4, 0.6, 1]}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}
             style={styles.gradient}>

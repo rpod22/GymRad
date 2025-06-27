@@ -17,17 +17,17 @@ export default function App() {
       id: 1,
       name: "Push Pull Legs",
       trainings: [
-        {id: 1, name: "Push"},
-        {id: 2, name: "Pull"},
-        {id: 3, name: "Legs"},
+        {id: 1, name: "Push", exercises: []},
+        {id: 2, name: "Pull", exercises: []},
+        {id: 3, name: "Legs", exercises: []},
       ]
     },
     {
       id: 2,
       name: "FBW",
       trainings: [
-        {id: 1, name: "FBW 1"},
-        {id: 2, name: "FBW 2"}
+        {id: 1, name: "FBW 1", exercises: []},
+        {id: 2, name: "FBW 2", exercises: []}
       ]
     },
   ]);

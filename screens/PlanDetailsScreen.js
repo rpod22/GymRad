@@ -53,13 +53,11 @@ const PlanDetailsScreen = ({ route, navigation, plans, setPlans }) => {
         )
     };
 
-
-
     return (
         <LinearGradient 
             style={styles.gradient}
             colors={COLORS.gradient}
-            locations={[0, 0.6, 1]}
+            locations={[0.4, 0.6, 1]}
             start={{x: 0, y: 0}}
             end={{x:1, y:1}}>
             <SafeAreaView style={styles.safeAreaView} edges={['top', 'left', 'right']}>

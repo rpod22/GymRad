@@ -5,5 +5,5 @@ export const COLORS = {
     secondaryBg: '#181C26',     
     textMain: '#F4F7FA',        
     textSecondary: '#99A0A9',  
-    gradient: ['#212736', '#181C26', '#151720', '#181C26']
+    gradient: ['#212736', '#181C26', '#151720']
 };
