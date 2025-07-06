@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, Keyboard, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, Keyboard, Image, Alert } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '../colors';
@@ -52,6 +52,27 @@ const TrainingDetailsScreen = ({ route, navigation, plans, setPlans }) => {
         setExerciseQuery('');
         setShowList(false);
     }
+
+    //function that handles deleting exercise from current training
+    const removeExerciseFromTraining = (exerciseId) => {
+        setPlans(prevPlans =>
+            prevPlans.map(plan =>
+                plan.id === planId
+                    ? {
+                        ...plan,
+                        trainings: plan.trainings.map(t => 
+                            t.id === trainingId
+                                ? {
+                                    ...t,
+                                    exercises: t.exercises.filter(ex => ex.id !== exerciseId)
+                                } 
+                                :t
+                        )  
+                    }
+                    :plan
+            )
+        );
+    };
 
     return (
         <LinearGradient 
@@ -125,7 +146,7 @@ const TrainingDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                 </View>
                 {(training.exercises && training.exercises.length > 0) && (
                     <DraggableFlatList
-                        style={{ marginTop: 15, marginHorizontal: 15 }}
+                        style={{ marginTop: 15, marginHorizontal: 15, marginBottom: 250 }}
                         data={training.exercises}
                         keyExtractor={item => item.id.toString()}
                         renderItem={({ item, drag, isActive }) => (
@@ -144,7 +165,22 @@ const TrainingDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                                     <Text style={{ color: '#bbb', fontSize: 13 }}>
                                         {item.description}
                                     </Text>
-                                </View>    
+                                </View>
+                                <TouchableOpacity
+                                    style={styles.removeExercise}
+                                    onPress={() =>
+                                        Alert.alert(
+                                            'Usuń ćwiczenie',
+                                            'Czy na pewno chcesz usunąć ćwiczenie?',
+                                            [
+                                                { text: 'Anuluj', style: 'cancel' },
+                                                { text: 'Usuń', style: 'destructive', onPress: () => removeExerciseFromTraining(item.id) }
+                                            ]
+                                        )
+                                    }
+                                >
+                                    <MaterialCommunityIcons name="trash-can-outline" size={24} color="#ff5c5c" style={{}}/>
+                                </TouchableOpacity>    
                             </TouchableOpacity>
                         )}
                         onDragEnd={({ data }) => {
@@ -165,6 +201,13 @@ const TrainingDetailsScreen = ({ route, navigation, plans, setPlans }) => {
                             );
                         }}
                     />
+                )}
+                {(training.exercises && training.exercises.length > 0) && (
+                    <TouchableOpacity 
+                        style={styles.startTrainingButton}
+                    >
+                        <Text style={{fontSize: 22, fontWeight: 'bold'}}>Rozpocznij trening</Text>
+                    </TouchableOpacity>
                 )}
             </SafeAreaView>
         </LinearGradient>
@@ -240,6 +283,21 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOpacity: 1,
         shadowOffset: {height: 2, width: 0}
+    },
+    startTrainingButton: {
+        backgroundColor: COLORS.accent,
+        height: 50,
+        width: '80%',
+        position: 'absolute',
+        bottom: 55,
+        marginHorizontal: 40,
+        borderRadius: 15,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    removeExercise: {
+        marginLeft: 10,
     },
 });
 

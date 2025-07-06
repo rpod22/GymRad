@@ -2,35 +2,45 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect } from 'react';
 import WelcomeScreen from './screens/WelcomeScreen';
 import TrainingPlansScreen from './screens/TrainingPlansScreen';
 import PlanDetailsScreen from './screens/PlanDetailsScreen';
 import TrainingDetailsScreen from './screens/TrainingDetailsScreen';
-import { useState } from 'react';
+
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-  const [plans, setPlans] = useState([
-    {
-      id: 1,
-      name: "Push Pull Legs",
-      trainings: [
-        {id: 1, name: "Push", exercises: []},
-        {id: 2, name: "Pull", exercises: []},
-        {id: 3, name: "Legs", exercises: []},
-      ]
-    },
-    {
-      id: 2,
-      name: "FBW",
-      trainings: [
-        {id: 1, name: "FBW 1", exercises: []},
-        {id: 2, name: "FBW 2", exercises: []}
-      ]
-    },
-  ]);
+  const [plans, setPlans] = useState(null);
+
+  useEffect(() => {
+    //loading saved plans when starting the app if they exist
+    const loadPlans = async () => {
+      try {
+        const savedPlans = await AsyncStorage.getItem('plans');
+        if(savedPlans) {
+          setPlans(JSON.parse(savedPlans));
+        } else {
+          setPlans([]);
+        }
+      } catch (err) {
+        console.log('Error while loading plans', err);
+        setPlans([]); //fallback
+      }
+    };
+
+    loadPlans();
+  }, []);
+
+  useEffect(() => {
+    if(plans !== null) {
+      AsyncStorage.setItem('plans', JSON.stringify(plans));
+    }
+  }, [plans]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
